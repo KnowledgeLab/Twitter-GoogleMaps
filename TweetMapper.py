@@ -46,7 +46,18 @@ def initMap(ofile,useBrowser):
     twMap = pygmaps.maps(51.20,0.0,2.8)
     twMap.draw(os.getcwd() + "/" + ofile)
     if useBrowser:
-            controller = webbrowser.get("safari")
+            if(re.search("linux",sys.platform)):
+                print "os is linux"
+                controller = webbrowser.get("firefox")
+            elif(re.search("darwin",sys.platform)):
+                print "os is darwin"
+                controller = webbrowser.get("safari")
+            elif(re.search("os/2",sys.platform,re.IGNORECASE)):
+                print "os is os/2"
+                controller = webbrowser.get("safari")
+            else:
+                print "os recognized, trying to get default browser."
+                controller = webbrowser.get()
     else:
             controller = None
     return (twMap,controller)
