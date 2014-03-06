@@ -37,9 +37,15 @@ class maps:
         self.radpoints.append(radpoint)
 
     def addpath(self,path, color = '#FF0000', fillcolor='#FF0000', opacity=False):
-	path = {'path':path, 'strokeColor':color, 'fillColor':fillcolor, 'opacity':opacity}
+	path = {'path':path, 'strokeColor':color, 'fillColor':fillcolor, 'opacity':opacity,
+            'arrows':False}
         self.paths.append(path)
     
+    def addpatharrows(self,path, color = '#FF0000', fillcolor='#FF0000', opacity=False):
+	path = {'path':path, 'strokeColor':color, 'fillColor':fillcolor, 'opacity':opacity,
+            'arrows':True}
+        self.paths.append(path)
+
     #create the html file which inlcude one google map and all points and paths
     def draw(self, htmlfile):
         f = open(htmlfile,'w')
@@ -65,6 +71,57 @@ class maps:
         f.write('</html>\n')        
         f.close()
 
+    #create the html file which inlcude one google map and all points and paths
+    #use satellite map as background.
+    def drawsat(self, htmlfile):
+        f = open(htmlfile,'w')
+        f.write('<html>\n')
+        f.write('<head>\n')
+        f.write('<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\n')
+        f.write('<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>\n')
+        f.write('<title>Google Maps - pygmaps </title>\n')
+        f.write('<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>\n')
+        f.write('<script type="text/javascript">\n')
+        f.write('\tfunction initialize() {\n')
+        self.drawmapsat(f)
+        self.drawgrids(f)
+        self.drawpoints(f)
+        self.drawradpoints(f)
+        self.drawpaths(f,self.paths)
+        f.write('\t}\n')
+        f.write('</script>\n')
+        f.write('</head>\n')
+        f.write('<body style="margin:0px; padding:0px;" onload="initialize()">\n')
+        f.write('\t<div id="map_canvas" style="width: 100%; height: 100%;"></div>\n')
+        f.write('</body>\n')
+        f.write('</html>\n')        
+        f.close()
+
+    #create the html file which inlcude one google map and all points and paths
+    #use satellite map as background.
+    def drawterr(self, htmlfile):
+        f = open(htmlfile,'w')
+        f.write('<html>\n')
+        f.write('<head>\n')
+        f.write('<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\n')
+        f.write('<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>\n')
+        f.write('<title>Google Maps - pygmaps </title>\n')
+        f.write('<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>\n')
+        f.write('<script type="text/javascript">\n')
+        f.write('\tfunction initialize() {\n')
+        self.drawmapterr(f)
+        self.drawgrids(f)
+        self.drawpoints(f)
+        self.drawradpoints(f)
+        self.drawpaths(f,self.paths)
+        f.write('\t}\n')
+        f.write('</script>\n')
+        f.write('</head>\n')
+        f.write('<body style="margin:0px; padding:0px;" onload="initialize()">\n')
+        f.write('\t<div id="map_canvas" style="width: 100%; height: 100%;"></div>\n')
+        f.write('</body>\n')
+        f.write('</html>\n')        
+        f.close()
     def drawgrids(self, f):
         if self.gridsetting == None:
             return
@@ -117,10 +174,14 @@ class maps:
         for path in paths:
             if not path['opacity']:
 		#fill is false
-                #self.drawPolyline(f,path['path'], strokeColor = path['strokeColor'])
-            	self.drawPolyline(f,path['path'], strokeColor = path['strokeColor'])
+                if(path['arrows']):
+                    self.drawPolylineArrows(f,path['path'], strokeColor = path['strokeColor'])
+                else:
+                    #self.drawPolyline(f,path['path'], strokeColor = path['strokeColor'])
+                    self.drawPolyline(f,path['path'], strokeColor = path['strokeColor'])
 	    else:
 		self.drawPolygon(f,path['path'],strokeColor=path['strokeColor'], fillColor=path['fillColor'], fillOpacity=path['opacity'])
+
     #############################################
     # # # # # # Low level Map Drawing # # # # # # 
     #############################################
@@ -129,12 +190,31 @@ class maps:
         f.write('\t\tvar myOptions = {\n')
         f.write('\t\t\tzoom: %d,\n' % (self.zoom))
         f.write('\t\t\tcenter: centerlatlng,\n')
+        #use satellite map as background.
         f.write('\t\t\tmapTypeId: google.maps.MapTypeId.ROADMAP\n')
         f.write('\t\t};\n')
         f.write('\t\tvar map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);\n')
         f.write('\n')
 
+    def drawmapsat(self, f):
+        f.write('\t\tvar centerlatlng = new google.maps.LatLng(%f, %f);\n' % (self.center[0],self.center[1]))
+        f.write('\t\tvar myOptions = {\n')
+        f.write('\t\t\tzoom: %d,\n' % (self.zoom))
+        f.write('\t\t\tcenter: centerlatlng,\n')
+        f.write('\t\t\tmapTypeId: google.maps.MapTypeId.SATELLITE\n')
+        f.write('\t\t};\n')
+        f.write('\t\tvar map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);\n')
+        f.write('\n')
 
+    def drawmapterr(self, f):
+        f.write('\t\tvar centerlatlng = new google.maps.LatLng(%f, %f);\n' % (self.center[0],self.center[1]))
+        f.write('\t\tvar myOptions = {\n')
+        f.write('\t\t\tzoom: %d,\n' % (self.zoom))
+        f.write('\t\t\tcenter: centerlatlng,\n')
+        f.write('\t\t\tmapTypeId: google.maps.MapTypeId.TERRAIN\n')
+        f.write('\t\t};\n')
+        f.write('\t\tvar map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);\n')
+        f.write('\n')
 
     def drawpoint(self,f,lat,lon,color,title):
         f.write('\t\tvar latlng = new google.maps.LatLng(%f, %f);\n'%(lat,lon))
@@ -161,10 +241,6 @@ class maps:
         f.write('];\n')
         f.write('\n')
 
-        #f.write('var lineSymbol = {'\
-                #        'path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW'
-        #        '};\n')
-
         f.write('var Path = new google.maps.Polyline({\n')
         f.write('clickable: %s,\n' % (str(clickable).lower()))
         f.write('geodesic: %s,\n' % (str(geodesic).lower()))
@@ -172,10 +248,41 @@ class maps:
         f.write('strokeColor: "%s",\n' %(strokeColor))
         f.write('strokeOpacity: %f,\n' % (strokeOpacity))
         f.write('strokeWeight: %d\n' % (strokeWeight))
-        #f.write('icons: [{\n')
-        #f.write('icon: lineSymbol,\n')
-        #f.write('offset: \'100%\' \n')
-        #f.write('}]')
+        f.write('});\n')
+        f.write('\n')
+        f.write('Path.setMap(map);\n')
+        f.write('\n\n')
+
+    def drawPolylineArrows(self,f,path,\
+            clickable = False, \
+            geodesic = True,\
+            strokeColor = "#FF0000",\
+            strokeOpacity = 1.0,\
+            strokeWeight = 2
+            ):
+        f.write('var PolylineCoordinates = [\n')
+        for coordinate in path:
+            f.write('new google.maps.LatLng(%f, %f),\n' % (coordinate[0],coordinate[1]))
+        f.write('];\n')
+        f.write('\n')
+
+        f.write('var lineSymbol = {\n')
+        f.write('path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,\n')
+        f.write('scale: 3,\n')
+        f.write('};\n')
+        f.write('\n')
+
+        f.write('var Path = new google.maps.Polyline({\n')
+        f.write('clickable: %s,\n' % (str(clickable).lower()))
+        f.write('geodesic: %s,\n' % (str(geodesic).lower()))
+        f.write('path: PolylineCoordinates,\n')
+        f.write('strokeColor: "%s",\n' %(strokeColor))
+        f.write('strokeOpacity: %f,\n' % (strokeOpacity))
+        f.write('strokeWeight: %d,\n' % (strokeWeight))
+        f.write('icons: [{\n')
+        f.write('icon: lineSymbol,\n')
+        f.write("offset: '100%' \n")
+        f.write('}],\n')
         f.write('});\n')
         f.write('\n')
         f.write('Path.setMap(map);\n')
