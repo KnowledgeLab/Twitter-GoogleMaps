@@ -30,7 +30,7 @@ def geocodeTweet(jsonStr,gcCount,flog):
             coordinates = jsonStr["coordinates"]["coordinates"]
         else:
             location = jsonStr["user"]["location"]
-            coordinates = Geocoder.geocode(location).coordinates
+            coordinates = Geocoder.geocode(location)[0].coordinates
             gcCount += 1
     except GeocoderError,e:
         flog.write("GeocoderError exception is: %s\n" % e)

@@ -20,10 +20,10 @@ import TweetMapper as mapper
 class TweetListener(StreamListener):
     """Extend tweepy's StreamListener class and re-define the on_data() method"""
 
-    def __init__(self,useBrowser,filename,colorDict):
+    def __init__(self,useBrowser,ofile,colorDict):
         StreamListener.__init__(self)
         self.useBrowser = useBrowser
-        self.ofile = filename
+        self.ofile = ofile
         (self.twMap,self.controller) = mapper.initMap(self.ofile,self.useBrowser)
         self.allCoordinates = []
         self.flog = codecs.open("log.txt",mode="w",encoding="utf-8")
@@ -64,16 +64,16 @@ class TweetListener(StreamListener):
                     self.gcCount += 1
                     self.allCoordinates.append(map(float,coordinates))
                     tweetColor = self.setTweetColor(jsonStr)
-                    if(len(self.allCoordinates)%3 == 0):
+                    if(len(self.allCoordinates)%2 == 0):
                         mapper.updateMap(self.twMap,self.ofile,\
-                                            self.allCoordinates[-1],0,tweetColor)
+                                            self.allCoordinates[-1],1,tweetColor)
                         # refresh browser if flag set
                         if(self.useBrowser):
                             self.controller.open(os.getcwd() + "/" + self.ofile)
                     else:
                         # update map with tweet coordinates
                         mapper.updateMap(self.twMap,self.ofile,\
-                                            self.allCoordinates[-1],1,tweetColor)
+                                            self.allCoordinates[-1],0,tweetColor)
                 self.flog.write("gcCount = %d tweetCount = %d successRate = %f\n" \
                                 % (self.gcCount,self.tweetCount,\
                                     (float(self.gcCount)/self.tweetCount)))
@@ -88,6 +88,7 @@ class TweetListener(StreamListener):
             time.sleep(5)
 
     def setTweetColor(self,jsonStr):
+        """Sets the color of the tweet's marker on Google Maps."""
         for key in self.colorDict.keys():
             if(re.search(key,jsonStr["text"],re.IGNORECASE)):
                     return self.colorDict[key]

@@ -60,7 +60,7 @@ def geocoder(location):
     try:
         # geocode the user's location* attribute
         if(location):
-            coordinates = Geocoder.geocode(location).coordinates
+            coordinates = Geocoder.geocode(location)[0].coordinates
     except GeocoderError,e:
         print "geocode error: " + str(e)
         pass
