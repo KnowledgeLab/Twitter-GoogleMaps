@@ -75,6 +75,10 @@ def geocoder(location):
 def geocodeStoreData(ifile):
     """ Iterate over input data, geocode and
     store data frame augmented with lat/lon values"""
+    if(not os.path.exists(os.getcwd()+"/"+"store_openings.csv")):
+            print "Download the input file " \
+                    "from http://www.econ.umn.edu/~holmes/data/WalMart/store_openings.csv"
+            sys.exit(-1)
     #iDF = pd.read_csv("store_openings.csv")
     iDF = pd.read_csv(ifile)
     iDF["lat"] = -99999
