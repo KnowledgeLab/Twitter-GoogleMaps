@@ -84,6 +84,9 @@ def geocodeStoreData(ifile):
         coords = geocoder(addr)
         iDF["lat"] = coords[0]
         iDF["lng"] = coords[1]
+        # inject time delay between API requests
+        # to avoid exceeding rate limit.
+        time.sleep(1)
     # write data frame augmented with lat,lng
     iDF.to_csv(ofile,sep=",",index=False,quoting=csv.QUOTE_MINIMAL)
 
