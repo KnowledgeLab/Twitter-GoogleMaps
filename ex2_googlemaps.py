@@ -89,7 +89,7 @@ def geocodeStoreData(ifile):
         iDF.loc[item,"lng"] = coords[1]
         # inject time delay between API requests
         # to avoid exceeding rate limit.
-        time.sleep(2)
+        time.sleep(3)
     # write data frame augmented with lat,lng
     iDF.to_csv(ofile,sep=",",index=False,quoting=csv.QUOTE_MINIMAL)
 
@@ -116,7 +116,6 @@ if __name__=="__main__":
         # set cadence of the map updates
         if index < 100:
             interval = 20
-            time.sleep(0.1)
         elif index < 500:
             interval = 100
         elif index < 1000:
@@ -126,7 +125,7 @@ if __name__=="__main__":
         # update Google Maps map
         if(index % interval == 0):
             updateMap(mymap,[row["lat"],row["lng"]],1,ohtml,cDict[row["type_store"]],controller)
-            time.sleep(0.1)
+            time.sleep(0.2)
         else:
             updateMap(mymap,[row["lat"],row["lng"]],0,ohtml,cDict[row["type_store"]],controller)
         time.sleep(0.015)
