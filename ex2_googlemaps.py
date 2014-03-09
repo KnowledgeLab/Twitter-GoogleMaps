@@ -77,16 +77,19 @@ def geocodeStoreData(ifile):
     store data frame augmented with lat/lon values"""
     #iDF = pd.read_csv("store_openings.csv")
     iDF = pd.read_csv(ifile)
+    iDF["lat"] = -99999
+    iDF["lng"] = -99999
     for item,row in iDF.iterrows():
         addr = " ".join([row["STREETADDR"],row["STRCITY"],row["STRSTATE"],\
                                                         str(int(row["ZIPCODE"]))])
         # geocode address
+        print "Geocoding address: " + addr
         coords = geocoder(addr)
-        iDF["lat"] = coords[0]
-        iDF["lng"] = coords[1]
+        iDF.loc[item,"lat"] = coords[0]
+        iDF.loc[item,"lng"] = coords[1]
         # inject time delay between API requests
         # to avoid exceeding rate limit.
-        time.sleep(1)
+        time.sleep(3)
     # write data frame augmented with lat,lng
     iDF.to_csv(ofile,sep=",",index=False,quoting=csv.QUOTE_MINIMAL)
 
