@@ -104,7 +104,7 @@ if __name__=="__main__":
     ifile = "store_openings.csv"
     ofile = "geocoded_store_openings.csv"
     ohtml = "ex2_googlemaps.html"
-    cDict = {'Supercenter':'FF0000','Wal-Mart':'0000FF'}
+    cDict = {'Supercenter':'#FF0000','Wal-Mart':'#0000FF'}
     mymap = initMap(ohtml,40.0,-100.0,4.5)
     controller = setWebBrowser()
 
