@@ -19,10 +19,11 @@ import csv
 import webbrowser
 from optparse import OptionParser
 
-"""Read in the store_openings.csv file:
+"""Geocode the Wal-Mart store openings data and plot on Google Maps.
+    The input data file, store_openings.csv, is available at:
     http://www.econ.umn.edu/~holmes/data/WalMart/store_openings.csv
     This contains opening dates of Wal-Mart stores and supercenters
-    from 1962-2006. Geocode the Wal-Mart stores and plot on Google Maps."""
+    from 1962-2006."""
 
 def setWebBrowser():
     if(re.search("linux",sys.platform)):
