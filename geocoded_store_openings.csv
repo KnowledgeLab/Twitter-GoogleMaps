@@ -1,3 +1,4 @@
+#http://www.econ.umn.edu/~holmes/data/WalMart/store_openings.csv
 "storenum","OPENDATE","date_super","conversion","st","county","STREETADDR","STRCITY","STRSTATE","ZIPCODE","type_store","lat","lng"
 1,7/1/1962 ,3/1/1997 ,1,"05","007","2110 WEST WALNUT","Rogers","AR","72756","Supercenter",36.3317272,-94.1490546
 2,8/1/1964 ,3/1/1996 ,1,"05","009","1417 HWY 62/65 N","Harrison","AR","72601","Supercenter",36.252044,-93.123198
