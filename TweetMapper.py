@@ -43,7 +43,7 @@ def geocodeTweet(jsonStr,gcCount,flog):
 def initMap(ofile,useBrowser):
     """Set up Google Maps"""
     # centre map on Greenwich
-    twMap = pygmaps.maps(51.20,0.0,2.8)
+    twMap = pygmaps.maps(35.20,0.0,2.95)
     twMap.draw(os.getcwd() + "/" + ofile)
     if useBrowser:
             if(re.search("linux",sys.platform)):

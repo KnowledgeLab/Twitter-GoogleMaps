@@ -15,7 +15,7 @@ from pygeolib import GeocoderError
 import pygmaps
 import webbrowser
 
-"""Build a network of friends starting from the Twitter user senjohnmccain."""
+"""Build a network of friends for a given list of Twitter users."""
 
 ckey = " " #consumer key
 csecret = " " #conumer scret

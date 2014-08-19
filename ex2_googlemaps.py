@@ -19,10 +19,11 @@ import csv
 import webbrowser
 from optparse import OptionParser
 
-"""Read in the store_openings.csv file:
+"""Geocode the Wal-Mart store openings data and plot on Google Maps.
+    The input data file, store_openings.csv, is available at:
     http://www.econ.umn.edu/~holmes/data/WalMart/store_openings.csv
     This contains opening dates of Wal-Mart stores and supercenters
-    from 1962-2006. Geocode the Wal-Mart stores and plot on Google Maps."""
+    from 1962-2006."""
 
 def setWebBrowser():
     if(re.search("linux",sys.platform)):
@@ -75,15 +76,25 @@ def geocoder(location):
 def geocodeStoreData(ifile):
     """ Iterate over input data, geocode and
     store data frame augmented with lat/lon values"""
+    if(not os.path.exists(os.getcwd()+"/"+"store_openings.csv")):
+            print "Download the input file " \
+                    "from http://www.econ.umn.edu/~holmes/data/WalMart/store_openings.csv"
+            sys.exit(-1)
     #iDF = pd.read_csv("store_openings.csv")
     iDF = pd.read_csv(ifile)
+    iDF["lat"] = -99999
+    iDF["lng"] = -99999
     for item,row in iDF.iterrows():
         addr = " ".join([row["STREETADDR"],row["STRCITY"],row["STRSTATE"],\
                                                         str(int(row["ZIPCODE"]))])
         # geocode address
+        print "Geocoding address: " + addr
         coords = geocoder(addr)
-        iDF["lat"] = coords[0]
-        iDF["lng"] = coords[1]
+        iDF.loc[item,"lat"] = coords[0]
+        iDF.loc[item,"lng"] = coords[1]
+        # inject time delay between API requests
+        # to avoid exceeding rate limit.
+        time.sleep(3)
     # write data frame augmented with lat,lng
     iDF.to_csv(ofile,sep=",",index=False,quoting=csv.QUOTE_MINIMAL)
 
@@ -94,7 +105,7 @@ if __name__=="__main__":
     ifile = "store_openings.csv"
     ofile = "geocoded_store_openings.csv"
     ohtml = "ex2_googlemaps.html"
-    cDict = {'Supercenter':'FF0000','Wal-Mart':'0000FF'}
+    cDict = {'Supercenter':'#FF0000','Wal-Mart':'#0000FF'}
     mymap = initMap(ohtml,40.0,-100.0,4.5)
     controller = setWebBrowser()
 
@@ -110,7 +121,6 @@ if __name__=="__main__":
         # set cadence of the map updates
         if index < 100:
             interval = 20
-            time.sleep(0.1)
         elif index < 500:
             interval = 100
         elif index < 1000:
@@ -120,7 +130,7 @@ if __name__=="__main__":
         # update Google Maps map
         if(index % interval == 0):
             updateMap(mymap,[row["lat"],row["lng"]],1,ohtml,cDict[row["type_store"]],controller)
-            time.sleep(0.1)
+            time.sleep(0.2)
         else:
             updateMap(mymap,[row["lat"],row["lng"]],0,ohtml,cDict[row["type_store"]],controller)
         time.sleep(0.015)

@@ -2,13 +2,15 @@ import math
 # Licensed under the Apache License, Version 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
 #
-#This is a modified pygmaps.py version of the original Pygmaps-0.1.1
-#authored by Yifei Jiang (jiangyifei@gmail.com). The code has been
-#modified to draw filled radpoints.
+#This is a modified pygmaps.py version, authored by
+# Radhika Saksena (radhikasaksena@gmail.com) based on 
+# the original Pygmaps-0.1.1, authored by Yifei Jiang
+#(jiangyifei@gmail.com). The code has been modified
+#to draw filled radpoints, polylines with arrows, etc.
 #
 ###########################################################
 ## Google map python wrapper V0.1
-## 
+##
 ############################################################
 
 class maps:
